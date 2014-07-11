@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "forever start -l forever.log -o out.log -e err.log bin/www",
+    "stop": "forever stop bin/www"
   },
   "dependencies": {
     "body-parser": "~1.0.0",
@@ -14,6 +15,7 @@
     "jade": "~1.3.0",
     "morgan": "~1.0.0",
     "rsvp": "^3.0.9",
-    "static-favicon": "~1.0.0"
+    "static-favicon": "~1.0.0",
+    "forever": "^0.11.1"
   }
 }
