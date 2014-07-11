@@ -10,7 +10,7 @@ table img {
     height:20px;
 }
 table {
-    box-shadow: rgba(1,1,20,0.3) 0px 00px 100px;
+    box-shadow: rgba(1,1,20,0.3) 0px 0px 100px;
 }
 /* Loading animation from codrops */
 .loading-animation {
@@ -19,7 +19,7 @@ table {
 	right: 0;
 	width: 300px;
 	height: 300px;
-	background: #ed4e6e;
+    background:rgba(1,100,200,0.3);
 	-webkit-transition: -webkit-transform 0.3s;
 	transition: transform 0.3s;
 	-webkit-transform: translateX(100%) translateY(-100%) rotate(45deg);
@@ -48,8 +48,10 @@ table {
 	margin-left: -40px;
 	width: 80px;
 	height: 80px;
-	border-right-color: #bb344f;
-	border-left-color: #bb344f;
+    border-right-color:rgba(1,100,200,0.3);
+    border-left-color:rgba(1,100,200,0.3);
+	/* border-right-color: #bb344f; */
+	/* border-left-color: #bb344f; */
 	-webkit-animation: rotation 3s linear infinite;
 	animation: rotation 3s linear infinite;
 }
@@ -59,10 +61,8 @@ table {
 	margin-left: -20px;
 	width: 40px;
 	height: 40px;
-	border-top-color: #bb344f;
-	border-bottom-color: #bb344f;
-	-webkit-animation: rotation 1s linear infinite;
-	animation: rotation 1s linear infinite;
+    border-right-color:rgba(1,100,200,0.3);
+    border-left-color:rgba(1,100,200,0.3);
 }
 
 
@@ -86,10 +86,25 @@ table {
     width: 98%;
     text-align: center;
     position:relative;
-    box-shadow: rgba(1,1,20,0.3) 0px 00px 100px;
+    box-shadow: rgba(1,1,20,0.3) 0px 0px 100px;
     padding: 1%;
+    border-radius:5px;
 }
 
 #header img {
     width: 100%;
+}
+
+.loading-message {
+    position:absolute;
+    top:50%;
+    left:50%;
+    margin-left: -7em;
+    width:14em;
+    display:block;
+    text-align:center;
+    background:rgba(1,100,200,0.3);
+    padding:1em;
+    box-shadow: rgba(1,10,40,0.3) 0px 0px 30px;
+    border-radius:3px;
 }
