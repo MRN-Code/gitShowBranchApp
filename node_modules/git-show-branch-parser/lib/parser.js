@@ -2,7 +2,7 @@
  *  gitShowBranchParser: a simple tool to parse the output of `git show-branch` into useful JSON
  */
 var fs = require('fs');
-var RSVP = require('RSVP');
+var RSVP = require('rsvp');
 var _ = require('underscore');
 
 module.exports = (function () {
