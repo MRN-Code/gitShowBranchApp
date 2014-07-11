@@ -40,7 +40,7 @@
             var release = location.hash.match(/release\/(.*)$/)[1];
             $.getJSON('showbranch/release/' + release)
                 .done(function(data) {
-                    $('#content').html('');
+                    $('#content').html('').append('<h1>' + release + '</h1>');
                     data.forEach(function(repo){
                         var container = $('<div>');
                         container.append('<h3>' + repo.repo + '</h3>');
