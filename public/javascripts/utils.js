@@ -24,9 +24,12 @@
                 container.append('<table cellpadding="0" cellspacing="0" border="0" class="cell-border hover"></table>');
                 $('#content').html('').append(container);
                 var dataTableConfig = {
-                    columns: [{title: "Releases"}],
+                    columns: [{title: "Releases"}, {title: "Log Generation Date"}],
                     data: data.map(function buildLinks(release) {
-                        return ['<a href="#release/' + release + '">' + release + '</a>'];
+                        return [
+                            '<a href="#release/' + release.directory + '">' + release.directory + '</a>',
+                            new Date(release.mtime).toString()
+                        ];
                     })
                 };
                 container.children('table').dataTable(dataTableConfig);

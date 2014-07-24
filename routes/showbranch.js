@@ -6,7 +6,22 @@ var config = require('../config.json');
 var logDir = config.coinsBuilderPath + '/log/show_branch';
 var RSVP = require ('rsvp');
 var url = require('url');
-var refreshLogLock = false;
+    var refreshLogLock = false;
+
+    var promisify = function (asyncFn, params) {
+        return new RSVP.Promise(function promisifyAsyncFn(resolve, reject) {
+            var cb = function handleAsyncFn(err) {
+                if (err !== null) {
+                    reject(err);
+                } else {
+                    resolve(Array.prototype.slice.call(arguments, 1));
+            }
+        };
+        params.push(cb);
+        console.dir(params);
+        return asyncFn.apply(null, params);
+    });
+};
 
 RSVP.on('error', function(reason) {
     console.log(reason);
@@ -15,10 +30,21 @@ RSVP.on('error', function(reason) {
 
 /* GET home page. */
 router.get('/', function(req, res) {
-    fs.readdir(logDir, function(err, logDirs) {
-        console.log(JSON.stringify(logDirs));
-        res.end(JSON.stringify(logDirs));
-    });
+    return promisify(fs.readdir, [logDir])
+        .then(function getAllDirStats(dirs) {
+            var statsPromises;
+            console.dir(dirs);
+            dirs = dirs[0];
+            statsPromises = dirs.map(function getDirMTime(dirPath) {
+                return promisify(fs.stat, [logDir + '/'+ dirPath])
+                    .then(function getStatsMTime (stats) {
+                        return { directory: dirPath, mtime: stats[0].mtime };
+                    });
+            });
+            return RSVP.Promise.all(statsPromises);
+        }).then(function sendResponse (dirsAndStats) {
+            res.end(JSON.stringify(dirsAndStats));
+        });
 }); 
 
 router.param('release', function (req, res, next, releaseDir) {
@@ -92,7 +118,6 @@ router.get('/refreshlog', function(req, res) {
     }).then(function sendResponse(responseObj) {
         res.end(JSON.stringify(responseObj));
     });
-
 });
 
 module.exports = router;
