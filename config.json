@@ -1,0 +1,4 @@
+{
+    "coinsBuilderPath": "../coins_builder",
+    "logShowBranchCmd": "grunt multi:logShowBranch"
+}

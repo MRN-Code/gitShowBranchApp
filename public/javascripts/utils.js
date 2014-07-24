@@ -68,11 +68,46 @@
          } else {
             getReleases();
          }
-     };
+     }
+     function refreshLogs () {
+        var url = 'showbranch/refreshlog',
+            defaultLoadingMsg,
+            defaultRefreshLogMsg,
+            self = this;
+        $.ajax({
+            url: url,
+            dataType: 'json',
+            cache: false,
+            beforeSend: function () {
+                defaultRefreshLogMsg = $('#refresh_log').html();
+                $('#refresh_log').addClass('deactivated').html('Refreshing').off();
+                defaultLoadingMsg = $('.loading-message').html();
+                $('.loading-message').html('Refreshing Logs. This may take a while...');
+            }
+        })
+            .done(function(data) {
+                var completionMsg = '';
+                $('.loading-message').html(defaultLoadingMsg);
+                $('#refresh_log').removeClass('deactivated').html(defaultRefreshLogMsg).on('click', refreshLogs);
+                if(data.error) {
+                    $('#refresh_log').html(data.error).prop('title', data.output);
+                    completionMsg = 'Error: ' + data.error + ': <br>' + data.output;
+                } else if (data.output === 'Log refresh already in progress') {
+                    completionMsg = 'Log refresh already in progress. Try again in 30 seconds';
+                }else {
+                    completionMsg = 'Logs refreshed successfully';
+                    getBranchCommits();
+                }
+                $('#refresh_log_message').html(completionMsg).show(function(){$(this).delay(3000).fadeOut();});
+            });
+     }
 
      $(document).ajaxStart(startLoading);
      $(document).ajaxStop(stopLoading);
      window.addEventListener('hashchange', getBranchCommits);
 
-     $(document).ready(getBranchCommits);
+     $(document).ready(function() {
+        $('#refresh_log').on('click', refreshLogs);
+        getBranchCommits();
+     });
 })();
