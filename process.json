@@ -1,0 +1,9 @@
+{
+    "apps": [
+        {
+            "name": "gitShowBranchApp",
+            "script": "bin/www",
+            "run_as_user": "coinsbuilder"
+        }
+    ]
+}

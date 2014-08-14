@@ -2,10 +2,6 @@
   "name": "gitShowBranchApp",
   "version": "0.0.1",
   "private": true,
-  "scripts": {
-    "start": "forever start -l forever.log -o out.log -e err.log bin/www",
-    "stop": "forever stop bin/www"
-  },
   "dependencies": {
     "body-parser": "~1.0.0",
     "cookie-parser": "~1.0.1",
