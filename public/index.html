@@ -3,6 +3,7 @@
     <head>
         <script src="javascripts/vendor/jquery-2.1.1.min.js"></script>
         <script src="javascripts/vendor/jquery.dataTables.js"></script>
+        <script src="javascripts/vendor/underscore-1.7.0/underscore-min.js"></script>
         <link rel="stylesheet" href="stylesheets/vendor/jquery.dataTables.css" />
         <link rel="stylesheet" href="stylesheets/style.css" />
         <script src="javascripts/utils.js"></script>
@@ -13,10 +14,12 @@
 	<div id="version_container"></div>
         <div id="refresh_log_message"></div>
         <p>Note: the 'current' release may not be up to date. Click 'Refresh Logs' above to be sure</p>
+	<p>Tip #1: Commits are not listed in any particular order. If there are commits listed in all three environments, it probably means that they were a hotfix.</p> 
+        <p>Tip $2: Only pull requests are shown by default. Uncheck the box to the right to show all commits.</p>
         <h3 class="loading-message">Loading...</h3>
         <div class="loading-animation la-animate"></div>
         <div id="filter_container">
-            <input id="filter_pulls" type="checkbox" />
+            <input id="filter_pulls" type="checkbox" checked />
             <label for="filter_pulls">Show only pull requests</label>
         </div>
         <div id="content"></div>

@@ -107,6 +107,7 @@ table {
     padding:1em;
     box-shadow: rgba(1,10,40,0.3) 0px 0px 30px;
     border-radius:3px;
+    z-index: 100;
 }
 #refresh_log {
     background-color: aqua;
@@ -132,6 +133,7 @@ table {
     color: #555;
     border-radius: 3px;
     display:none;
+    z-index: 100;
 }
 .deactivated {
     background-color: #999 !important;

@@ -75,6 +75,7 @@
                 .done(function(data) {
                     $('#content').html('').append('<h1>Showing status just before releasing <em>' + release + '</em> to production</h1>');
                     data.forEach(function(repo){
+                        repo.diff.commits = trimCommonCommits(repo.diff.commits);
                         var container = $('<div>');
                         container.append('<h3>' + repo.repo + '</h3>');
                         container.append('<table cellpadding="0" cellspacing="0" border="0" class="cell-border hover"></table>');
@@ -97,13 +98,35 @@
                                             } else {
                                                 branchLabel = branchLabels[branchName];
                                             }
-                                            return {title: branchLabel};
+                                            return {title: branchLabel}
                                         }
                                     )
                                 ),
                             data: repo.diff.commits.map(function buildRows(commit) {
-                                return ['<a href="https://github.com/MRN-Code/' + repo.repo + '/commit/' + commit.label + '" target="_blank">[' + commit.label + ']</a> ' + commit.commitMessage].concat(commit.branches.map(convertToImage));
-                            })
+                                return ['<a href="https://github.com/MRN-Code/' + repo.repo + '/commit/' + commit.label + '" target="_blank">[' + commit.label + ']</a> ' + linkCommitMessageToPR(repo.repo, commit.commitMessage)]
+                                    .concat(commit.branches.map(convertToImage))
+                                    .concat(commit.branches);
+                            }),
+                            columnDefs: [
+                                {
+                                    targets:[4,5,6],
+                                    visible:false,
+                                    searchable:false
+                                },
+                                {
+                                    targets:[1],
+                                    orderData:[4,5,6]
+                                },
+                                {
+                                    targets:[2],
+                                    orderData:[5,6]
+                                },
+                                {
+                                    targets:[3],
+                                    orderData:[6]
+                                }
+                            ],
+                            order:[[4,'asc'],[5,'asc'],[6,'asc']]
                         };
                         container.children('table').dataTable(dataTableConfig);
                     });
@@ -119,7 +142,7 @@
      function filterPulls () {
          var searchStr = '';
          if ($('#filter_pulls:checked').length) {
-             var searchStr = 'pull';
+             searchStr = 'pull';
          }
          $('table').each(function(){$(this).DataTable().search(searchStr).draw()})
      }
@@ -154,6 +177,39 @@
                 }
                 $('#refresh_log_message').html(completionMsg).show(function(){$(this).delay(3000).fadeOut();});
             });
+     }
+     function generatePullRequestURL(repoName, pullRequestNumber) {
+         var urlSeed = 'https://github.com/MRN-Code/';
+         return urlSeed + repoName + '/pull/' + pullRequestNumber;
+     }
+     function extractPullRequestNumber(commitMessage) {
+         var pullRequestNumber;
+         if (commitMessage.match('pull request #')) {
+             pullRequestNumber = commitMessage.match(/pull request #(\d+)/)[1];
+             return pullRequestNumber;
+         }
+         return null;
+     }
+     function linkCommitMessageToPR(repoName, commitMessage) {
+         var pullRequestNumber, pullRequestURL, anchorHTML;
+         if (commitMessage.match('pull request #')) {
+             pullRequestNumber = extractPullRequestNumber(commitMessage);
+             pullRequestURL = generatePullRequestURL(repoName, pullRequestNumber);
+             anchorHTML = '<a target="_blank" href="' + pullRequestURL + '">#' + pullRequestNumber + '</a>';
+             return commitMessage.replace('#' + pullRequestNumber, anchorHTML);
+         }
+         return commitMessage;
+     }
+     function trimCommonCommits(commits) {
+         var splitFound = false;
+         return commits.reverse()
+             .filter(function findFirstUncommonCommit(commit, index) {
+                 if (!commit.branches.every(_.identity)) { //true if commit is not shared across all branches
+                     splitFound = true;
+                 }
+                 return splitFound;
+             })
+             .reverse();
      }
 
      $(document).ajaxStart(startLoading);
