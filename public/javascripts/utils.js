@@ -1,9 +1,10 @@
 (function() {
+    var versionMeta = {};
     function convertToImage (bool) {
         if (bool) {
             return '<img src="images/check.png"></img>';
         } else {
-            return '<img src="images/clock.png"></img>';
+            return '<img src="images/minus.png"></img>';
         }
     }
 
@@ -24,7 +25,8 @@
                 container.append('<table cellpadding="0" cellspacing="0" border="0" class="cell-border hover"></table>');
                 $('#content').html('').append(container);
                 var dataTableConfig = {
-                    columns: [{title: "Releases"}, {title: "Log Generation Date"}],
+                    bPaginate: false,
+                    columns: [{title: "Next Release Version"}, {title: "Log Generation Date"}],
                     data: data.map(function buildLinks(release) {
                         return [
                             '<a href="#release/' + release.directory + '">' + release.directory + '</a>',
@@ -38,12 +40,40 @@
                     console.assert(false, err);
             });
     }
+    function getVersionInfo() {
+        $.getJSON('showbranch/version')
+            .done(function (data) {
+                 var key, val, tmpEl, container;
+                 var versionLabels = {
+                     prodVersion: "production version",
+                     releaseVersion: "next release version",
+                     developVersion: "version under development"
+                 };
+                 versionMeta = data;
+                 container = $('#version_container').empty();
+                 for (var key in versionLabels) {
+                     if (data.hasOwnProperty(key)) {
+                         val = data[key];
+                         tmpEl = jQuery('<div>');
+                         tmpEl.append('<label>' + versionLabels[key] +'</label>');
+                         tmpEl.append('<input disabled value="' + val +'" />');
+                         container.append(tmpEl);
+                     }
+                 }
+            });
+    }
     function getBranchCommits (release) {
+        var release;
+        var branchLabels = {
+            "origin/master": "Production",
+            "origin/release": "Next Release",
+            "origin/develop": "Under Development"
+        };
         if(location.hash.match(/release\/.*/)) {
-            var release = location.hash.match(/release\/(.*)$/)[1];
+            release = location.hash.match(/release\/(.*)$/)[1];
             $.getJSON('showbranch/release/' + release)
                 .done(function(data) {
-                    $('#content').html('').append('<h1>' + release + '</h1>');
+                    $('#content').html('').append('<h1>Showing status just before releasing <em>' + release + '</em> to production</h1>');
                     data.forEach(function(repo){
                         var container = $('<div>');
                         container.append('<h3>' + repo.repo + '</h3>');
@@ -54,7 +84,20 @@
                                 .concat(
                                     repo.diff.branches.map(
                                         function extractLabel (branch) {
-                                            return {title: branch.label};
+                                            var branchName = branch.label;
+                                            var releaseLabel = '';
+                                            var branchLabel = '';
+                                            if (branchName.match('release')) {
+                                                if (release === 'current') {
+                                                    releaseLabel = versionMeta.releaseVersion;
+                                                } else {
+                                                    releaseLabel = release;
+                                                }
+                                                branchLabel = branchLabels[branchName] + ' (' + releaseLabel + ')';
+                                            } else {
+                                                branchLabel = branchLabels[branchName];
+                                            }
+                                            return {title: branchLabel};
                                         }
                                     )
                                 ),
@@ -64,6 +107,7 @@
                         };
                         container.children('table').dataTable(dataTableConfig);
                     });
+                    filterPulls();
                 }).fail(function (err) {
                     $('#content').html('<h3 class="error">Error fetching release logs</h3>');
                     console.assert(false, err);
@@ -71,6 +115,13 @@
          } else {
             getReleases();
          }
+     }
+     function filterPulls () {
+         var searchStr = '';
+         if ($('#filter_pulls:checked').length) {
+             var searchStr = 'pull';
+         }
+         $('table').each(function(){$(this).DataTable().search(searchStr).draw()})
      }
      function refreshLogs () {
         var url = 'showbranch/refreshlog',
@@ -107,10 +158,15 @@
 
      $(document).ajaxStart(startLoading);
      $(document).ajaxStop(stopLoading);
-     window.addEventListener('hashchange', getBranchCommits);
+     window.addEventListener('hashchange',function () {
+         getVersionInfo();
+         getBranchCommits();
+     });
 
      $(document).ready(function() {
         $('#refresh_log').on('click', refreshLogs);
+        $('#filter_pulls').on('change', filterPulls);
+        getVersionInfo();
         getBranchCommits();
      });
 })();

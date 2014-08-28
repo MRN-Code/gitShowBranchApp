@@ -119,6 +119,8 @@ table {
     display: block;
     margin-top: 1em;
     cursor: pointer;
+    position: absolute;
+    top: -7px;
 }
 #refresh_log_message {
     margin-left: auto;
@@ -134,4 +136,30 @@ table {
 .deactivated {
     background-color: #999 !important;
     cursor: default !important;
+}
+#version_container {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    padding: 1em 0 1em 0;
+}
+#version_container label {
+    font-size:1.5em;
+    margin-right:1em;
+    color: #555;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+#version_container input {
+    font-size: 2em;
+    text-align: center;
+    color: rgba(0, 60, 130, 0.7);
+}
+#filter_container {
+    font-size: 1.5em;
+    text-align: center;
+    width: 100%;
+}
+#filter_container input {
+    height: 2em;
 }

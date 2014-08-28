@@ -3,7 +3,10 @@
         {
             "name": "gitShowBranchApp",
             "script": "bin/www",
-            "run_as_user": "coinsbuilder"
+            "run_as_user": "coinsbuilder",
+            "env": {
+                "SSH_AUTH_SOCK": "/tmp/ssh-YkjdBus12686/agent.12686"
+            }
         }
     ]
 }

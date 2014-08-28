@@ -8,12 +8,17 @@
         <script src="javascripts/utils.js"></script>
     </head>
     <body>
-        <div id="header"><img src="images/coins_banner.jpg" /></div>
         <button id="refresh_log">Refresh Logs</button>
+        <div id="header"><img src="images/coins_banner.jpg" /></div>
+	<div id="version_container"></div>
         <div id="refresh_log_message"></div>
         <p>Note: the 'current' release may not be up to date. Click 'Refresh Logs' above to be sure</p>
         <h3 class="loading-message">Loading...</h3>
         <div class="loading-animation la-animate"></div>
+        <div id="filter_container">
+            <input id="filter_pulls" type="checkbox" />
+            <label for="filter_pulls">Show only pull requests</label>
+        </div>
         <div id="content"></div>
     </body>
 </html>

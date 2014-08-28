@@ -82,6 +82,11 @@ router.get('/release/:release', function(req, res) {
     });
 });
 
+router.get('/version', function(req, res) {
+    var releaseMeta = require(process.cwd() + '/' + logDir + '/../../.releaseMeta.json');
+    res.end(JSON.stringify(releaseMeta));
+});
+
 router.get('/refreshlog', function(req, res) {
     var exec = require('child_process').exec,
         cmd = config.logShowBranchCmd;
@@ -103,7 +108,10 @@ router.get('/refreshlog', function(req, res) {
                     //remove the lock pointer
                     refreshLogLock = false;
                     if (error !== null) {
-                        reject(error);
+                        console.error(error);
+                        console.error(stderr);
+                        console.error(stdout);
+                        reject(error||stdout + stderr);
                     } else {
                         resolve({ error: null, output: stdout.toString()});
                     }
