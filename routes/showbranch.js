@@ -83,8 +83,11 @@ router.get('/release/:release', function(req, res) {
 });
 
 router.get('/version', function(req, res) {
-    var releaseMeta = require(process.cwd() + '/' + logDir + '/../../.releaseMeta.json');
-    res.end(JSON.stringify(releaseMeta));
+    var releaseMetaPath = process.cwd() + '/' + logDir + '/../../.releaseMeta.json'; 
+    promisify(fs.readFile, [releaseMetaPath])
+        .then(function respondWithReleaseMeta(buffer) {
+            res.end(buffer.toString());
+        });
 });
 
 router.get('/refreshlog', function(req, res) {
