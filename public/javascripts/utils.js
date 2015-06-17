@@ -27,6 +27,7 @@
                 var dataTableConfig = {
                     bPaginate: false,
                     columns: [{title: "Next Release Version"}, {title: "Log Generation Date"}],
+                    order: [1, 'desc'],
                     data: data.map(function buildLinks(release) {
                         return [
                             '<a href="#release/' + release.directory + '">' + release.directory + '</a>',
