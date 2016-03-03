@@ -1,5 +1,16 @@
 (function() {
     var versionMeta = {};
+    $.fn.dataTableExt.oSort['semver-asc']  = function(a,b) {
+        a = parseFloat(a.replace(/(<).*?(>)|v|\./gi, ''));
+        b = parseFloat(b.replace(/(<).*?(>)|v|\./gi, ''));
+        return ((a < b) ? -1 : ((a > b) ?  1 : 0));
+    };
+
+    $.fn.dataTableExt.oSort['semver-desc'] = function(a,b) {
+        a = parseFloat(a.replace(/(<).*?(>)|v|\./gi, ''));
+        b = parseFloat(b.replace(/(<).*?(>)|v|\./gi, ''));
+        return ((a < b) ?  1 : ((a > b) ? -1 : 0));
+    };
     function convertToImage (bool) {
         if (bool) {
             return '<img src="images/check.png"></img>';
@@ -27,7 +38,8 @@
                 var dataTableConfig = {
                     bPaginate: false,
                     columns: [{title: "Next Release Version"}, {title: "Log Generation Date"}],
-                    order: [1, 'desc'],
+                    columnDefs: [{type: 'semver', targets: 0}],
+                    order: [0, 'desc'],
                     data: data.map(function buildLinks(release) {
                         return [
                             '<a href="#release/' + release.directory + '">' + release.directory + '</a>',
