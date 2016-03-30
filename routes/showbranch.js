@@ -108,7 +108,6 @@ router.get('/refreshlog', function(req, res) {
                     cwd: config.coinsBuilderPath
                 },
                 function handleRefreshLogOutput(error, stdout, stderr) {
-                    //remove the lock pointer
                     refreshLogLock = false;
                     if (error !== null) {
                         console.error(error);
@@ -116,6 +115,7 @@ router.get('/refreshlog', function(req, res) {
                         console.error(stdout);
                         reject(error||stdout + stderr);
                     } else {
+			console.log(stdout.toString());
                         resolve({ error: null, output: stdout.toString()});
                     }
                 }
