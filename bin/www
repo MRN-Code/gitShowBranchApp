@@ -5,5 +5,5 @@ const host = process.env.HOST || '127.0.0.1';
 app.set('port', process.env.PORT || 3000);
 
 var server = app.listen(app.get('port'), host, function() {
-  console.log('Express server listening on port ' + server.address().port);
+  console.log(`Express server listening on at ${server.address().address}:${server.address().port}`);
 });
